@@ -25,8 +25,17 @@ builder.Services.AddScoped<IEventoService, EventoService>();
 builder.Services.AddScoped<IProEventosRepository, ProEventosRepository>();
 builder.Services.AddScoped<IEventoRepository, EventoRepository>();
 
+builder.Services.AddCors(option => {
+    option.AddPolicy("MyAllowedOrigins",
+    policy => {
+        policy.WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
+app.UseCors("MyAllowedOrigins");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
