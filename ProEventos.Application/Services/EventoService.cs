@@ -22,42 +22,46 @@ namespace ProEventos.Application.Services
 
         public async Task<EventoDto> AddEvento(EventoDto model)
         {
-            return null;
-            //try
-            //{
-            //    _proEventosRepository.Add(model);
-            //    if (await _proEventosRepository.SaveChangesAsync())
-            //    {
-            //        return await _eventoRepository.GetEventoByIdAsync(model.Id, false);
-            //    }
-            //    return null;
-            //}
-            //catch (Exception ex)
-            //{
-            //    throw new Exception(ex.Message);
-            //}
+            try
+            {
+                var evento = _mapper.Map<Evento>(model);
+                _proEventosRepository.Add(evento);
+                if (await _proEventosRepository.SaveChangesAsync())
+                {
+                    var eventoRep = await _eventoRepository.GetEventoByIdAsync(evento.Id, false);
+                    return _mapper.Map<EventoDto>(eventoRep);
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<EventoDto> UpdateEvento(int idEvento, EventoDto model)
         {
-            return null;
-            //try
-            //{
-            //    // Verificar se existe o evento
-            //    var evento = await _eventoRepository.GetEventoByIdAsync(idEvento, false);
-            //    if (evento is null) { return null; }
+            try
+            {
+                // Verificar se existe o evento
+                var evento = await _eventoRepository.GetEventoByIdAsync(idEvento, false);
+                if (evento is null) { return null; }
+                model.Id = evento.Id;
 
-            //    _proEventosRepository.Update<Evento>(model);
-            //    if (await _proEventosRepository.SaveChangesAsync())
-            //    {
-            //        return await _eventoRepository.GetEventoByIdAsync(idEvento);
-            //    }
-            //    return null;
-            //}
-            //catch (Exception ex)
-            //{
-            //    throw new Exception(ex.Message);
-            //}
+                _mapper.Map(model, evento);
+
+                _proEventosRepository.Update<Evento>(evento);
+                if (await _proEventosRepository.SaveChangesAsync())
+                {
+                    var eventoRep = await _eventoRepository.GetEventoByIdAsync(idEvento, false);
+                    return _mapper.Map<EventoDto>(eventoRep);
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<bool> DeleteEvento(int idEvento)
