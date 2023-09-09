@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ProEventos.Api.Dtos;
+using ProEventos.Application.Dtos;
 using ProEventos.Domain.Entities;
 
 namespace ProEventos.Api.Helpers

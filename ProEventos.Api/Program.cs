@@ -4,7 +4,6 @@ using ProEventos.Application.Services;
 using ProEventos.Persistence.Context;
 using ProEventos.Persistence.Interface;
 using ProEventos.Persistence.Repositories;
-using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 

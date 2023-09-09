@@ -1,8 +1,7 @@
 using System.Diagnostics.Tracing;
 using Microsoft.AspNetCore.Mvc;
-using ProEventos.Api.Dtos;
+using ProEventos.Application.Dtos;
 using ProEventos.Application.Interfaces;
-using ProEventos.Domain.Entities;
 
 namespace ProEventos.Api.Controllers
 {
@@ -23,24 +22,10 @@ namespace ProEventos.Api.Controllers
         {
             try
             {
-                var eventos = await _eventoService.GetAllEventosAsync(true);
-                if (eventos is null) { return NotFound("Nenhum evento encontrado."); }
+                var evento = await _eventoService.GetAllEventosAsync(true);
+                if (evento is null) { return NotFound("Nenhum evento encontrado."); }
                 
-                var eventosRetorno = new List<EventoDto>();
-                foreach(var evento in eventos){
-                    eventosRetorno.Add(new EventoDto(){
-                        Id = evento.Id,
-                        Local = evento.Local,
-                        DataEvento = evento.DataEvento.ToString(),
-                        Tema = evento.Tema,
-                        QtdPessoas = evento.QtdPessoas,
-                        ImagemURL = evento.ImagemURL,
-                        Telefone = evento.Telefone,
-                        Email = evento.Email
-                    });
-                }
-                
-                return Ok(eventosRetorno);
+                return Ok(evento);
             }
             catch (Exception ex)
             {
@@ -84,7 +69,7 @@ namespace ProEventos.Api.Controllers
 
         [HttpPost]
         [Route("")]
-        public async Task<IActionResult> Post(Evento model)
+        public async Task<IActionResult> Post(EventoDto model)
         {
             try
             {
@@ -101,7 +86,7 @@ namespace ProEventos.Api.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IActionResult> Put(int id, Evento model)
+        public async Task<IActionResult> Put(int id, EventoDto model)
         {
             try
             {
