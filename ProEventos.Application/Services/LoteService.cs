@@ -82,7 +82,7 @@ namespace ProEventos.Application.Services
                 {
                     if (model.Id == 0)
                     {
-
+                        await AddLote(eventoId, model);
                     }
                     else
                     {
@@ -98,6 +98,22 @@ namespace ProEventos.Application.Services
 
                 var lotesRetorno = await _loteRepository.GetLotesByEventoIdAsync(eventoId);
                 return _mapper.Map<LoteDto[]>(lotesRetorno);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task AddLote(int eventoId, LoteDto model)
+        {
+            try
+            {
+                var lote = _mapper.Map<Lote>(model);
+                lote.EventoID = eventoId;
+
+                _proEventosRepository.Add<Lote>(lote);
+                await _proEventosRepository.SaveChangesAsync();
             }
             catch (Exception ex)
             {
