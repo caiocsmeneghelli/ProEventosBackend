@@ -70,9 +70,39 @@ namespace ProEventos.Application.Services
             }
         }
 
-        public Task<LoteDto> SaveLotes(int eventoId, LoteDto[] models)
+        public async Task<LoteDto[]> SaveLotes(int eventoId, LoteDto[] models)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var lotes = await _loteRepository.GetLotesByEventoIdAsync(eventoId);
+                if (lotes == null)
+                    return null;
+
+                foreach( var model in models)
+                {
+                    if (model.Id == 0)
+                    {
+
+                    }
+                    else
+                    {
+                        var lote = lotes.FirstOrDefault(lote => lote.Id == model.Id);
+                        model.EventoID = eventoId;
+
+                        _mapper.Map(model, lote);
+
+                        _proEventosRepository.Update<Lote>(lote);
+                        await _proEventosRepository.SaveChangesAsync();
+                    }
+                }
+
+                var lotesRetorno = await _loteRepository.GetLotesByEventoIdAsync(eventoId);
+                return _mapper.Map<LoteDto[]>(lotesRetorno);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

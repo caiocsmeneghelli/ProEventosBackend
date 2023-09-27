@@ -6,7 +6,7 @@ namespace ProEventos.Application.Interfaces
     {
         Task<LoteDto> GetLoteByIdsAsync(int eventoId, int loteId);
         Task<LoteDto[]> GetLotesByEventoIdAsync(int eventoId);
-        Task<LoteDto> SaveLotes(int eventoId, LoteDto[] models);
+        Task<LoteDto[]> SaveLotes(int eventoId, LoteDto[] models);
         Task<bool> DeleteLote(int loteId, int eventoId);
     }
 }
