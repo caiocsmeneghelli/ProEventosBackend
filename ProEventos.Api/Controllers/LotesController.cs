@@ -14,43 +14,64 @@ namespace ProEventos.Api.Controllers
             _loteService = loteService;
         }
 
-        
+
         [HttpGet]
         [Route("{eventoId}")]
         public async Task<IActionResult> GetByEventoId(int eventoId)
         {
-            try{
-                var lotes = await _loteService.GetAllLotesByEventoAsync(eventoId);
-                if(lotes == null)
+            try
+            {
+                var lotes = await _loteService.GetLotesByEventoIdAsync(eventoId);
+                if (lotes == null)
                     return NoContent();
-                
+
                 return Ok(lotes);
             }
-            catch(Exception ex){
+            catch (Exception ex)
+            {
                 return this.StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar recuperar lotes: {ex.Message}");
             }
         }
 
-        [HttpPost]
-        [Route("")]
-        public async Task<IActionResult> Post()
-        {
-            return Ok();
-        }
-
         [HttpPut]
-        [Route("{idEvento}")]
+        [Route("{eventoId}")]
         public async Task<IActionResult> Put(int eventoId, LoteDto[] models)
         {
-            return Ok();
+            try
+            {
+                var lotes = _loteService.SaveLotes(eventoId, models);
+                if (lotes == null)
+                    return NoContent();
+
+                return Ok(lotes);
+            }
+            catch (Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                    $"Erro ao tentar salvar lotes: {ex.Message}");
+            }
         }
 
         [HttpDelete]
         [Route("{eventoId}/{loteId}")]
         public async Task<IActionResult> Delete(int eventoId, int loteId)
         {
-            return Ok();
+            try
+            {
+                var lote = await _loteService.GetLoteByIdsAsync(eventoId, loteId);
+                if (lote == null)
+                    return NoContent();
+
+                return await _loteService.DeleteLote(loteId, eventoId)
+                    ? Ok(new { message = "Deletado" })
+                    : throw new Exception("Ocorreu um problema não específico ao tentar deletar Lote.");
+            }
+            catch(Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                    $"Erro ao tentar deletar lote. Erro: {ex.Message}");
+            }
         }
     }
 }

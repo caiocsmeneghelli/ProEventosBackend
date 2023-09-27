@@ -25,8 +25,12 @@ var serverVersion = ServerVersion.AutoDetect(connectionString);
 builder.Services.AddDbContext<ProEventosContext>(opt => opt.UseMySql(connectionString, serverVersion));
 
 builder.Services.AddScoped<IEventoService, EventoService>();
+builder.Services.AddScoped<ILoteService, LoteService>();
+
 builder.Services.AddScoped<IProEventosRepository, ProEventosRepository>();
 builder.Services.AddScoped<IEventoRepository, EventoRepository>();
+builder.Services.AddScoped<ILoteRepository, LoteRepository>();
+
 
 builder.Services.AddCors(option => {
     option.AddPolicy("MyAllowedOrigins",
