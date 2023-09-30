@@ -6,10 +6,10 @@ namespace ProEventos.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LotesController : ControllerBase
+    public class LoteController : ControllerBase
     {
         private readonly ILoteService _loteService;
-        public LotesController(ILoteService loteService)
+        public LoteController(ILoteService loteService)
         {
             _loteService = loteService;
         }
@@ -65,7 +65,7 @@ namespace ProEventos.Api.Controllers
 
                 return await _loteService.DeleteLote(loteId, eventoId)
                     ? Ok(new { message = "Deletado" })
-                    : throw new Exception("Ocorreu um problema não específico ao tentar deletar Lote.");
+                    : throw new Exception("Ocorreu um problema nï¿½o especï¿½fico ao tentar deletar Lote.");
             }
             catch(Exception ex)
             {
