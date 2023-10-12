@@ -35,7 +35,8 @@ builder.Services.AddScoped<ILoteRepository, LoteRepository>();
 builder.Services.AddCors(option => {
     option.AddPolicy("MyAllowedOrigins",
     policy => {
-        policy.WithOrigins("http://localhost:4200")
+        //policy.WithOrigins("http://localhost:4200")        
+        policy.AllowAnyOrigin()
             .AllowAnyHeader()
             .AllowAnyMethod();
     });

@@ -36,15 +36,15 @@ namespace ProEventos.Api.Controllers
 
         [HttpPut]
         [Route("{eventoId}")]
-        public async Task<IActionResult> Put(int eventoId, LoteDto[] models)
+        public async Task<IActionResult> Put(int eventoId, LoteDto[] lotes)
         {
             try
             {
-                var lotes = _loteService.SaveLotes(eventoId, models);
-                if (lotes == null)
+                var lotesRetorno = _loteService.SaveLotes(eventoId, lotes);
+                if (lotesRetorno == null)
                     return NoContent();
 
-                return Ok(lotes);
+                return Ok(lotesRetorno);
             }
             catch (Exception ex)
             {
