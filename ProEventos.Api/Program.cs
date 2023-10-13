@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using ProEventos.Application.Interfaces;
 using ProEventos.Application.Services;
 using ProEventos.Persistence.Context;
@@ -44,6 +45,11 @@ builder.Services.AddCors(option => {
 
 var app = builder.Build();
 app.UseCors("MyAllowedOrigins");
+app.UseStaticFiles(new StaticFileOptions()
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Resources")),
+    RequestPath = new PathString("/Resources")
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

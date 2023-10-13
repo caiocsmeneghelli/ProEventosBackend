@@ -10,10 +10,12 @@ namespace ProEventos.Api.Controllers
     public class EventoController : ControllerBase
     {
         private readonly IEventoService _eventoService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public EventoController(IEventoService eventoService)
+        public EventoController(IEventoService eventoService, IWebHostEnvironment webHostEnvironment)
         {
             _eventoService = eventoService;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpGet]
@@ -91,6 +93,33 @@ namespace ProEventos.Api.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("upload-image/{eventoId}")]
+        public async Task<IActionResult> UploadImage(int eventoId)
+        {
+            try
+            {
+                var evento = await _eventoService.GetEventoByIdAsync(eventoId);
+                if (evento is null)
+                    return BadRequest("Erro ao tentar adicionar evento.");
+
+                var file = Request.Form.Files[0];
+                if(file.Length > 0)
+                {
+                    DeleteImage(evento.ImagemURL);
+                    evento.ImagemURL = await SaveImage(file);
+                }
+
+                var eventoRetorno = await _eventoService.UpdateEvento(eventoId, evento);
+                return Ok(eventoRetorno);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    string.Format("Erro ao tentar adicionar evento. Erro: ", ex.Message));
+            }
+        }
+
         [HttpPut]
         [Route("{id}")]
         public async Task<IActionResult> Put(int id, EventoDto model)
@@ -123,6 +152,35 @@ namespace ProEventos.Api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     string.Format("Erro ao tentar excluir evento. Erro: ", ex.Message));
             }
+        }
+
+        [NonAction]
+        public void DeleteImage(string imageName)
+        {
+            var imagemPath = Path.Combine(_webHostEnvironment.ContentRootPath, @"Resources/Images", imageName);
+            if (System.IO.File.Exists(imagemPath))
+            {
+                System.IO.File.Delete(imagemPath);
+            }
+        }
+
+        [NonAction]
+        public async Task<string> SaveImage(IFormFile imageFile)
+        {
+            string imageName = new string(Path.GetFileNameWithoutExtension(imageFile.FileName)
+                .Take(10)
+                .ToArray())
+                .Replace(' ', '-');
+            imageName = $"{imageName}{DateTime.UtcNow.ToString("yymmssfff")}{Path.GetExtension(imageFile.FileName)}";
+
+            var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, @"Resources/Images", imageName);
+
+            using(var fileStream = new FileStream(imagePath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(fileStream);
+            }
+
+            return imageName;
         }
     }
 }
