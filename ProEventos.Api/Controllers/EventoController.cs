@@ -2,6 +2,7 @@ using System.Diagnostics.Tracing;
 using Microsoft.AspNetCore.Mvc;
 using ProEventos.Application.Dtos;
 using ProEventos.Application.Interfaces;
+using ProEventos.Domain.Entities;
 
 namespace ProEventos.Api.Controllers
 {
@@ -104,7 +105,7 @@ namespace ProEventos.Api.Controllers
                     return BadRequest("Erro ao tentar adicionar evento.");
 
                 var file = Request.Form.Files[0];
-                if(file.Length > 0)
+                if (file.Length > 0)
                 {
                     DeleteImage(evento.ImagemURL);
                     evento.ImagemURL = await SaveImage(file);
@@ -143,9 +144,18 @@ namespace ProEventos.Api.Controllers
         {
             try
             {
-                return await _eventoService.DeleteEvento(id) ?
-                    Ok(new { message = "Deletado" }) :
-                    BadRequest("Falha ao deletar evento.");
+                var evento = await _eventoService.GetEventoByIdAsync(id);
+                if (evento is null) { throw new Exception("Evento não encontrado."); }
+
+                if (await _eventoService.DeleteEvento(id))
+                {
+                    DeleteImage(evento.ImagemURL);
+                    return Ok(new { message = "Deletado" });
+                }
+                else
+                {
+                    return BadRequest("Falha ao deletar evento.");
+                }
             }
             catch (Exception ex)
             {
@@ -175,7 +185,7 @@ namespace ProEventos.Api.Controllers
 
             var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, @"Resources/Images", imageName);
 
-            using(var fileStream = new FileStream(imagePath, FileMode.Create))
+            using (var fileStream = new FileStream(imagePath, FileMode.Create))
             {
                 await imageFile.CopyToAsync(fileStream);
             }
