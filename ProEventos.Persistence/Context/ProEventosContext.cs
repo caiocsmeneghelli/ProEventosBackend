@@ -20,12 +20,30 @@ namespace ProEventos.Persistence.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<UserRole>(ur =>
+            {
+                ur.HasKey(u => new { u.UserId, u.RoleId });
+
+                ur.HasOne(u => u.Role)
+                    .WithMany(r => r.UserRoles)
+                    .HasForeignKey(u => u.RoleId)
+                    .IsRequired();
+
+                ur.HasOne(u => u.User)
+                    .WithMany(user => user.UserRoles)
+                    .HasForeignKey(u => u.UserId)
+                    .IsRequired();
+            });
+
             modelBuilder.Entity<PalestranteEvento>()
                 .HasKey(pe => new { pe.EventoId, pe.PalestranteId });
+
             modelBuilder.Entity<Evento>()
                 .HasMany(e => e.RedesSociais)
                 .WithOne(rs => rs.Evento)
                 .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Palestrante>()
                 .HasMany(p => p.RedesSociais)
                 .WithOne(rs => rs.Palestrante)
