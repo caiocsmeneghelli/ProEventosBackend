@@ -11,5 +11,13 @@ namespace ProEventos.Domain.Identity
         public Funcao Funcao { get; set; }
         public string ImagemPerfil { get; set; }
         public IEnumerable<UserRole> UserRoles { get; set; }
+
+        public string NomeCompleto
+        {
+            get
+            {
+                return string.Format("{0} {1}", PrimeiroNome, UltimoNome);
+            }
+        }
     }
 }

@@ -35,7 +35,7 @@ namespace ProEventos.Persistence.Repositories
                 query = query.Include(p => p.PalestranteEventos)
                     .ThenInclude(pe => pe.Evento);
             }
-            query = query.Where(p => p.Nome.ToLower().Contains(nome.ToLower()));
+            query = query.Where(p => p.User.NomeCompleto.ToLower().Contains(nome.ToLower()));
             return await query.ToArrayAsync();
         }
         public async Task<Palestrante> GetPalestranteByIdAsync(int palestranteId, bool includeEventos)
