@@ -1,4 +1,5 @@
-﻿using ProEventos.Domain.Identity;
+﻿using Microsoft.EntityFrameworkCore;
+using ProEventos.Domain.Identity;
 using ProEventos.Persistence.Context;
 using ProEventos.Persistence.Interface;
 using System;
@@ -16,19 +17,19 @@ namespace ProEventos.Persistence.Repositories
         {
             _context = context;
         }
-        public Task<User> GetUserByIdAsync(int id)
+        public async Task<User> GetUserByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Users.SingleOrDefaultAsync(u => u.Id == id);
         }
 
-        public Task<User> GetUserByUserNameAsync(string userName)
+        public async Task<User> GetUserByUserNameAsync(string userName)
         {
-            throw new NotImplementedException();
+            return await _context.Users.SingleOrDefaultAsync(u => u.UserName == userName);
         }
 
-        public Task<IEnumerable<User>> GetUsersAsync()
+        public async Task<IEnumerable<User>> GetUsersAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Users.ToListAsync();
         }
     }
 }
