@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers()
-    .AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = 
+    .AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = 
         Newtonsoft.Json.ReferenceLoopHandling.Ignore
     );
 
@@ -27,10 +27,13 @@ builder.Services.AddDbContext<ProEventosContext>(opt => opt.UseMySql(connectionS
 
 builder.Services.AddScoped<IEventoService, EventoService>();
 builder.Services.AddScoped<ILoteService, LoteService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<IProEventosRepository, ProEventosRepository>();
 builder.Services.AddScoped<IEventoRepository, EventoRepository>();
 builder.Services.AddScoped<ILoteRepository, LoteRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 
 builder.Services.AddCors(option => {
