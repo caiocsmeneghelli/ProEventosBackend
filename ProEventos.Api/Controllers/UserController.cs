@@ -58,5 +58,35 @@ namespace ProEventos.Api.Controllers
                     $"Falha ao criar Usuário. Erro: {ex.Message}");
             }
         }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("Login")]
+        public async Task<IActionResult> Login(UserLoginDto userLoginDto)
+        {
+            try
+            {
+                var user = _userService.GetUserByUserNameAsync(userLoginDto.UserName);
+                if (user == null)
+                    return Unauthorized("Usuário inválido.");
+
+                var result = await _userService.CheckUserPasswordAsync(user.Result, userLoginDto.Password);
+                if (!result.Succeeded)
+                    return Unauthorized();
+
+                string token = _tokenService.CreateToken(user.Result).Result;
+
+                return Ok(new
+                {
+                    userName = user.Result.UserName,
+                    PrimeiroNome = user.Result.PrimeiroNome,
+                    token = token
+                });
+            }catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"Erro ao tentar realizar login. Erro: {ex.Message}");
+            }
+        }
     }
 }
