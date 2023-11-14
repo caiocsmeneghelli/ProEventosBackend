@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProEventos.Application.Dtos;
 using ProEventos.Application.Interfaces;
+using System.Security.Claims;
 
 namespace ProEventos.Api.Controllers
 {
@@ -21,12 +22,12 @@ namespace ProEventos.Api.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
-        [Route("GetUser/{userName}")]
-        public async Task<IActionResult> GetUser(string userName)
+        [Route("GetUser")]
+        public async Task<IActionResult> GetUser()
         {
             try
             {
+                var userName = User.FindFirst(ClaimTypes.Name)?.Value;
                 var user = await _userService.GetUserByUserNameAsync(userName);
                 return Ok(user);
             }

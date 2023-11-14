@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProEventos.Persistence.Context;
 
@@ -10,9 +11,10 @@ using ProEventos.Persistence.Context;
 namespace ProEventos.Persistence.Migrations
 {
     [DbContext(typeof(ProEventosContext))]
-    partial class ProEventoContextModelSnapshot : ModelSnapshot
+    [Migration("20231108134517_RemoveNullableProps")]
+    partial class RemoveNullableProps
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -280,6 +282,7 @@ namespace ProEventos.Persistence.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Descricao")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Email")
@@ -293,6 +296,7 @@ namespace ProEventos.Persistence.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ImagemPerfil")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<bool>("LockoutEnabled")
