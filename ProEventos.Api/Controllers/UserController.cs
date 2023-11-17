@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ProEventos.Api.Extensions;
 using ProEventos.Application.Dtos;
 using ProEventos.Application.Interfaces;
 using System.Security.Claims;
@@ -27,7 +28,8 @@ namespace ProEventos.Api.Controllers
         {
             try
             {
-                var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+                //var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+                var userName = User.GetUserName();
                 var user = await _userService.GetUserByUserNameAsync(userName);
                 return Ok(user);
             }
