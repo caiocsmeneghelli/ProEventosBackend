@@ -91,5 +91,26 @@ namespace ProEventos.Api.Controllers
                     $"Erro ao tentar realizar login. Erro: {ex.Message}");
             }
         }
+
+        [HttpPut]
+        [Route("Update")]
+        public async Task<IActionResult> Update(UserUpdateDto updateUser)
+        {
+            try
+            {
+                var user = await _userService.GetUserByUserNameAsync(User.GetUserName());
+                if (user == null) return Unauthorized("Usuário inválido");
+
+                var userReturn = await _userService.UpdateUser(updateUser);
+                if (userReturn == null)
+                    return NoContent();
+
+                return Ok(userReturn);
+            }catch(Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                    $"Falha ao atualizar usuário. Erro: {ex.Message}");
+            }
+        }
     }
 }
