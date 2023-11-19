@@ -44,7 +44,7 @@ namespace ProEventos.Application.Services
             }
         }
 
-        public async Task<UserDto> CreateUserAsync(UserDto userDto)
+        public async Task<UserUpdateDto> CreateUserAsync(UserDto userDto)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace ProEventos.Application.Services
 
                 if(result.Succeeded)
                 {
-                    var userToReturn = _mapper.Map<UserDto>(user);
+                    var userToReturn = _mapper.Map<UserUpdateDto>(user);
                     return userToReturn;
                 }
 

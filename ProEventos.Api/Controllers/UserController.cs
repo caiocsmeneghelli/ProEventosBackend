@@ -51,11 +51,21 @@ namespace ProEventos.Api.Controllers
                     return BadRequest("Usuário já existe.");
 
                 var user = await _userService.CreateUserAsync(userDto);
-                if(user != null)
-                    return Ok(user);
+                if (user != null)
+                {
+                    string token = _tokenService.CreateToken(user).Result;
+
+                    return Ok(new
+                    {
+                        userName = user.UserName,
+                        PrimeiroNome = user.PrimeiroNome,
+                        token = token
+                    });
+                }
 
                 return BadRequest("Usuário não criado, tente novamente mais tarde.");
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError,
                     $"Falha ao criar Usuário. Erro: {ex.Message}");
@@ -85,7 +95,8 @@ namespace ProEventos.Api.Controllers
                     PrimeiroNome = user.Result.PrimeiroNome,
                     token = token
                 });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar realizar login. Erro: {ex.Message}");
@@ -106,7 +117,8 @@ namespace ProEventos.Api.Controllers
                     return NoContent();
 
                 return Ok(userReturn);
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError,
                     $"Falha ao atualizar usuário. Erro: {ex.Message}");
