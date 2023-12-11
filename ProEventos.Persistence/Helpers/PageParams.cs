@@ -19,5 +19,7 @@ namespace ProEventos.Persistence.Helpers
                 pageSize = (value > MaxPageSize) ? MaxPageSize : value;
             }
         }
+
+        public string Term { get; set; }
     }
 }
