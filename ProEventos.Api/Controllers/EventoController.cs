@@ -5,6 +5,7 @@ using ProEventos.Api.Extensions;
 using ProEventos.Application.Dtos;
 using ProEventos.Application.Interfaces;
 using ProEventos.Domain.Entities;
+using ProEventos.Persistence.Helpers;
 
 namespace ProEventos.Api.Controllers
 {
@@ -26,14 +27,17 @@ namespace ProEventos.Api.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] PageParams pageParams)
         {
             try
             {
                 int userId = User.GetUserId();
-                var evento = await _eventoService.GetAllEventosAsync(userId, true);
+                var evento = await _eventoService.GetAllEventosAsync(userId, pageParams, true);
                 if (evento is null)
                     return NoContent();
+
+                Response.AddPagination(evento.CurrentPage, evento.PageSize, 
+                    evento.TotalCount, evento.TotalPages);
 
                 return Ok(evento);
             }
@@ -56,26 +60,6 @@ namespace ProEventos.Api.Controllers
                     return NoContent();
 
                 return Ok(evento);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    string.Format("Erro ao tentar recuperar eventos. Erro: ", ex.Message));
-            }
-        }
-
-        [HttpGet]
-        [Route("tema/{tema}")]
-        public async Task<IActionResult> GetAllByTema(string tema)
-        {
-            try
-            {
-                int userId = User.GetUserId();
-                var eventos = await _eventoService.GetAllEventosByTemaAsync(userId, tema, true);
-                if (eventos is null)
-                    return NoContent();
-
-                return Ok(eventos);
             }
             catch (Exception ex)
             {
@@ -158,7 +142,7 @@ namespace ProEventos.Api.Controllers
                 int userId = User.GetUserId();
                 var evento = await _eventoService.GetEventoByIdAsync(userId, id);
                 if (evento is null) { throw new Exception("Evento não encontrado."); }
-    
+
                 if (await _eventoService.DeleteEvento(userId, id))
                 {
                     DeleteImage(evento.ImagemURL);
