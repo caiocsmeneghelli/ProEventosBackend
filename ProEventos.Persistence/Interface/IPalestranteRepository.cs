@@ -1,11 +1,11 @@
 using ProEventos.Domain.Entities;
+using ProEventos.Persistence.Helpers;
 
 namespace ProEventos.Persistence.Interface
 {
-    public interface IPalestranteRepository
+    public interface IPalestranteRepository : IProEventosRepository
     {
-        Task<Palestrante[]> GetAllPalestrantesAsync(bool includeEventos);
-        Task<Palestrante[]> GetAllPalestrantesByNomeAsync(string nome, bool includeEventos);
-        Task<Palestrante> GetPalestranteByIdAsync(int palestranteId, bool includeEventos);
+        Task<PageList<Palestrante>> GetAllPalestrantesAsync(PageParams pageParams, bool includeEventos = false);
+        Task<Palestrante> GetPalestranteByIdAsync(int userId, bool includeEventos = false);
     }
 }
