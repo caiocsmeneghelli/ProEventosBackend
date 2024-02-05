@@ -10,9 +10,9 @@ namespace ProEventos.Application.Interfaces
 {
     public interface IPalestranteService
     {
-        Task<PalestranteDto> AddPalestrante(int userId, AddPalestranteDto addPalestranteDto);
-        Task<PalestranteDto> UpdatePalestrante(int userId, UpdatePalestranteDto updatePalestranteDto);
-        Task<PageList<PalestranteDto>> GetAllPalestrantesAsync(int userId, PageParams pageParams, bool includeEventos = true);
+        Task<PalestranteDto> AddPalestrante(int userId, PalestranteAddDto addPalestranteDto);
+        Task<PalestranteDto> UpdatePalestrante(int userId, PalestranteUpdateDto updatePalestranteDto);
+        Task<PageList<PalestranteDto>> GetAllPalestrantesAsync(PageParams pageParams, bool includeEventos = true);
         Task<PalestranteDto> GetPalestranteByUserIdAsync(int userId, bool includeEventos = true);
     }
 }
