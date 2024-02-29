@@ -44,16 +44,33 @@ namespace ProEventos.Application.Services
             }
         }
 
-        public async Task<bool> DeleteLote(int loteId, int eventoId)
+        public async Task<bool> DeleteByEvento(int eventoId, int redeSocialId)
         {
             try
             {
-                var lote = await _loteRepository.GetLoteByIdsAsync(loteId, eventoId);
-                if (lote == null)
-                    throw new Exception("Lote não encontrado para remoção.");
+                var redeSocial = await _redeSocialRepository.GetRedeSocialEventoByIdsAsync(eventoId, redeSocialId);
+                if (redeSocial == null)
+                    throw new Exception("Rede Social não encontrado para remoção.");
 
-                _proEventosRepository.Delete<Lote>(lote);
-                return await _proEventosRepository.SaveChangesAsync();
+                _redeSocialRepository.Delete<RedeSocial>(redeSocial);
+                return await _redeSocialRepository.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<bool> DeleteByPalestrante(int palestranteId, int redeSocialId)
+        {
+            try
+            {
+                var redeSocial = await _redeSocialRepository.GetRedeSocialPalestranteByIdsAsync(palestranteId, redeSocialId);
+                if (redeSocial == null)
+                    throw new Exception("Rede Social não encontrado para remoção.");
+
+                _redeSocialRepository.Delete<RedeSocial>(redeSocial);
+                return await _redeSocialRepository.SaveChangesAsync();
             }
             catch (Exception ex)
             {
