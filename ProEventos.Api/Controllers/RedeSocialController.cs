@@ -117,23 +117,52 @@ namespace ProEventos.Api.Controllers
         }
 
         [HttpDelete]
-        [Route("{eventoId}/{loteId}")]
-        public async Task<IActionResult> Delete(int eventoId, int loteId)
+        [Route("evento/{eventoId}/{redeSocialId}")]
+        public async Task<IActionResult> DeleteByEvento(int eventoId, int redeSocialId)
         {
             try
             {
-                var lote = await _loteService.GetLoteByIdsAsync(eventoId, loteId);
-                if (lote == null)
+                if (!(await AutorEvento(eventoId)))
+                    return Unauthorized();
+
+                var redeSocial = await _redeSocialService.GetRedeSocialEventoByIdAsync(eventoId, redeSocialId);
+                if (redeSocial == null)
                     return NoContent();
 
-                return await _loteService.DeleteLote(loteId, eventoId)
+                return await _redeSocialService.DeleteByEvento(eventoId, redeSocialId)
                     ? Ok(new { message = "Deletado" })
-                    : throw new Exception("Ocorreu um problema n�o espec�fico ao tentar deletar Lote.");
+                    : throw new Exception("Ocorreu um problema não específico ao tentar deletar Lote.");
             }
             catch(Exception ex)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar deletar lote. Erro: {ex.Message}");
+                    $"Erro ao tentar deletar rede social. Erro: {ex.Message}");
+            }
+        }
+
+        [HttpDelete]
+        [Route("palestrante/{redeSocialId}")]
+        public async Task<IActionResult> DeleteByPalestrante( int redeSocialId)
+        {
+            try
+            {
+                var userId = User.GetUserId();
+                var palestrante = _palestranteService.GetPalestranteByUserIdAsync(userId);
+                if (palestrante == null)
+                    return Unauthorized();
+
+                var redeSocial = await _redeSocialService.GetRedeSocialPalestranteByIdAsync(palestrante.Id, redeSocialId);
+                if (redeSocial == null)
+                    return NoContent();
+
+                return await _redeSocialService.DeleteByPalestrante(palestrante.Id, redeSocialId)
+                    ? Ok(new { message = "Deletado" })
+                    : throw new Exception("Ocorreu um problema não específico ao tentar deletar Lote.");
+            }
+            catch (Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                    $"Erro ao tentar deletar rede social. Erro: {ex.Message}");
             }
         }
 
