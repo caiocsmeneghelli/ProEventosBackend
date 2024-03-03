@@ -71,21 +71,48 @@ namespace ProEventos.Api.Controllers
         }
 
         [HttpPut]
-        [Route("{eventoId}")]
-        public async Task<IActionResult> Put(int eventoId, LoteDto[] lotes)
+        [Route("evento/{eventoId}")]
+        public async Task<IActionResult> SaveByEvento(int eventoId, RedeSocialDto[] redeSocial)
         {
             try
             {
-                var lotesRetorno = _loteService.SaveLotes(eventoId, lotes);
-                if (lotesRetorno == null)
+                if(!(await AutorEvento(eventoId)))
+                    return Unauthorized();
+
+                var redeSocialRetorno = _redeSocialService.SaveByEvento(eventoId, redeSocial);
+                if (redeSocialRetorno == null)
                     return NoContent();
 
-                return Ok(lotesRetorno);
+                return Ok(redeSocialRetorno);
             }
             catch (Exception ex)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar salvar lotes: {ex.Message}");
+                    $"Erro ao tentar salvar rede social: {ex.Message}");
+            }
+        }
+
+        [HttpPut]
+        [Route("palestrante")]
+        public async Task<IActionResult> SaveByPalestrante(RedeSocialDto[] redeSocial)
+        {
+            try
+            {
+                var userId = User.GetUserId();
+                var palestrante = await _palestranteService.GetPalestranteByUserIdAsync(userId);
+                if (palestrante == null)
+                    return Unauthorized();
+
+                var redeSocialRetorno = _redeSocialService.SaveByPalestrante(palestrante.Id, redeSocial);
+                if (redeSocialRetorno == null)
+                    return NoContent();
+
+                return Ok(redeSocialRetorno);
+            }
+            catch (Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                    $"Erro ao tentar salvar rede social: {ex.Message}");
             }
         }
 
