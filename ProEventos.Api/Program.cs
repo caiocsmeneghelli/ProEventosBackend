@@ -94,12 +94,15 @@ builder.Services.AddScoped<IEventoService, EventoService>();
 builder.Services.AddScoped<ILoteService, LoteService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPalestranteService, PalestranteService>();
+builder.Services.AddScoped<IRedeSocialService, RedeSocialService>();
 
 builder.Services.AddScoped<IProEventosRepository, ProEventosRepository>();
 builder.Services.AddScoped<IEventoRepository, EventoRepository>();
 builder.Services.AddScoped<ILoteRepository, LoteRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-
+builder.Services.AddScoped<IPalestranteRepository, PalestranteRepository>();
+builder.Services.AddScoped<IRedeSocialRepository, RedeSocialRepository>();
 
 builder.Services.AddCors(option =>
 {
