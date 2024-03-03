@@ -28,11 +28,12 @@ namespace ProEventos.Persistence.Repositories
                     .ThenInclude(pe => pe.Evento);
             }
 
-            query = query.Where(p => (p.MiniCurriculo.ToLower().Contains(pageParams.Term.ToLower()) ||
-                                      p.User.PrimeiroNome.ToLower().Contains(pageParams.Term.ToLower()) ||
-                                      p.User.UltimoNome.ToLower().Contains(pageParams.Term.ToLower())) &&
-                                      p.User.Funcao == Domain.Enums.Funcao.Palestrante)
-                .OrderBy(p => p.Id);
+                query = query.Where(p => (p.MiniCurriculo.ToLower().Contains(pageParams.Term.ToLower()) ||
+                                          p.User.PrimeiroNome.ToLower().Contains(pageParams.Term.ToLower()) ||
+                                          p.User.UltimoNome.ToLower().Contains(pageParams.Term.ToLower())) &&
+                                          p.User.Funcao == Domain.Enums.Funcao.Palestrante)
+                    .OrderBy(p => p.Id);
+
             return await PageList<Palestrante>.CreateAsync(query, pageParams.PageNumber, pageParams.PageSize);
         }
 
@@ -49,16 +50,6 @@ namespace ProEventos.Persistence.Repositories
             }
             query = query.Where(p => p.UserId == userId);
             return await query.FirstOrDefaultAsync();
-        }
-
-        public Task<bool> SaveChangesAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update<T>(T entity) where T : class
-        {
-            throw new NotImplementedException();
         }
     }
 }
