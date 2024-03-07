@@ -11,10 +11,13 @@
 
         public void DeleteImage(string imageName, string destino)
         {
-            var imagemPath = Path.Combine(_hostEnvironment.ContentRootPath, @$"Resources/{destino}", imageName);
-            if (System.IO.File.Exists(imagemPath))
+            if (!string.IsNullOrEmpty(imageName))
             {
-                System.IO.File.Delete(imagemPath);
+                var imagemPath = Path.Combine(_hostEnvironment.ContentRootPath, @$"Resources/{destino}", imageName);
+                if (System.IO.File.Exists(imagemPath))
+                {
+                    System.IO.File.Delete(imagemPath);
+                }
             }
         }
 
