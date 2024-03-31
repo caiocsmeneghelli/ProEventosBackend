@@ -147,7 +147,7 @@ namespace ProEventos.Api.Controllers
             try
             {
                 var userId = User.GetUserId();
-                var palestrante = _palestranteService.GetPalestranteByUserIdAsync(userId);
+                PalestranteDto palestrante = await _palestranteService.GetPalestranteByUserIdAsync(userId);
                 if (palestrante == null)
                     return Unauthorized();
 
